@@ -1,0 +1,28 @@
+version: "2.2"
+services:
+  jobmanager:
+    image: pyflink:latest
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager  
+    volumes:
+      - ".:/files:rw"
+
+  taskmanager:
+    image: pyflink:latest
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    deploy:
+        replicas: 2
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2 
+    volumes:
+      - ".:/files:rw"
